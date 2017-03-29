@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_grocery_list_url">Adresse du serveur</string>
+    <string name="pref_grocery_list_url_summary">L\'adresse du serveur à contacter pour obtenir la liste des courses.</string>
+    <string name="activity_settings">Paramètres</string>
+    <string name="main_menu_settings">Paramètres</string>
+    <string name="menu_grocery_item_delete">Supprimer</string>
+    <string name="action_item_delete">L\'item "%s" a bien été supprimé.</string>
+    <string name="error_loading_grocery_list">Une erreur est survenue lors du chargement de la liste des courses.</string>
+    <string name="activity_main">Liste des courses</string>
+    <string name="error_deleting_item">Une erreur est survenue lors de la suppression de l\'item.</string>
+</resources>

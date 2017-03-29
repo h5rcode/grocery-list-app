@@ -1,0 +1,54 @@
+package com.h5rcode.mygrocerylist.dependencies.modules;
+
+import android.content.Context;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+import com.h5rcode.mygrocerylist.MyGroceryListApp;
+import com.h5rcode.mygrocerylist.apiclient.GroceryListClient;
+import com.h5rcode.mygrocerylist.apiclient.GroceryListClientVolley;
+import com.h5rcode.mygrocerylist.configuration.ClientConfiguration;
+import com.h5rcode.mygrocerylist.configuration.ClientConfigurationImpl;
+import com.h5rcode.mygrocerylist.services.GroceryListService;
+import com.h5rcode.mygrocerylist.services.GroceryListServiceImpl;
+
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+
+@Module
+public class ServiceModule {
+
+    private final MyGroceryListApp mMyGroceryListApp;
+
+    public ServiceModule(MyGroceryListApp myGroceryListApp) {
+        mMyGroceryListApp = myGroceryListApp;
+    }
+
+    @Provides
+    @Singleton
+    RequestQueue provideRequestQueue(Context context) {
+        return Volley.newRequestQueue(context);
+    }
+
+    @Provides
+    Context provideContext() {
+        return mMyGroceryListApp;
+    }
+
+    @Provides
+    ClientConfiguration provideGroceryListClientConfiguration(Context context) {
+        return new ClientConfigurationImpl(context);
+    }
+
+    @Provides
+    GroceryListClient provideCategoryService(ClientConfiguration clientConfiguration, RequestQueue requestQueue) {
+        return new GroceryListClientVolley(clientConfiguration, requestQueue);
+    }
+
+    @Provides
+    GroceryListService provideGroceryListController(GroceryListClient groceryListClient) {
+        return new GroceryListServiceImpl(groceryListClient);
+    }
+}

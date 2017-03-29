@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:id="@+id/pref_grocery_list_url"
+        android:key="pref_grocery_list_url"
+        android:summary="@string/pref_grocery_list_url_summary"
+        android:title="@string/pref_grocery_list_url" />
+</PreferenceScreen>
