@@ -9,4 +9,10 @@
     <string name="error_loading_grocery_list">An error occurred when loading the grocery list.</string>
     <string name="activity_main">Grocery list</string>
     <string name="error_deleting_item">An error occurred when deleting the grocery item.</string>
+    <string name="label_current_quantity">Current quantity</string>
+    <string name="label_minimum_quantity">Minimum quantity</string>
+    <string name="label_desired_quantity">Desired quantity</string>
+    <string name="label_category">Category</string>
+    <string name="button_ok">OK</string>
+    <string name="message_item_edited_by_other_user">The item has been updated by an other user, check the new values before you continue.</string>
 </resources>

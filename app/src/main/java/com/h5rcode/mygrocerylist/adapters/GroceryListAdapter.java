@@ -44,14 +44,31 @@ public class GroceryListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void addItem(GroceryItem groceryItem) {
+    public void addGroceryItem(GroceryItem groceryItem) {
         _groceryItems.add(groceryItem);
         computeViewModels();
         notifyDataSetChanged();
     }
 
-    public void removeItem(GroceryItem groceryItem) {
+    public void removeGroceryItem(GroceryItem groceryItem) {
         _groceryItems.remove(groceryItem);
+        computeViewModels();
+        notifyDataSetChanged();
+    }
+
+    public void updateGroceryItem(GroceryItem newGroceryItem) {
+        GroceryItem oldGroceryItem = null;
+        for (GroceryItem groceryItem : _groceryItems) {
+            if (groceryItem.id == newGroceryItem.id) {
+                oldGroceryItem = groceryItem;
+                break;
+            }
+        }
+
+        int index = _groceryItems.indexOf(oldGroceryItem);
+        _groceryItems.remove(index);
+        _groceryItems.add(index, newGroceryItem);
+
         computeViewModels();
         notifyDataSetChanged();
     }

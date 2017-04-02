@@ -8,13 +8,13 @@ import java.util.List;
 public interface GroceryListClient {
     void addItem(GroceryItem groceryItem);
 
-    void deleteItem(long id);
+    void deleteGroceryItem(long id);
 
-    List<GroceryItemCategory> getCategories();
+    List<GroceryItemCategory> getGroceryItemCategories();
 
     GroceryItem getItem(long id);
 
-    List<GroceryItem> getItems();
+    List<GroceryItem> getGroceryItems();
 
-    void updateItem(GroceryItem groceryItem);
+    int updateGroceryItem(GroceryItem groceryItem);
 }

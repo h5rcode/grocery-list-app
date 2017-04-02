@@ -9,4 +9,10 @@
     <string name="error_loading_grocery_list">Une erreur est survenue lors du chargement de la liste des courses.</string>
     <string name="activity_main">Liste des courses</string>
     <string name="error_deleting_item">Une erreur est survenue lors de la suppression de l\'item.</string>
+    <string name="label_current_quantity">Quantité actuelle</string>
+    <string name="label_minimum_quantity">Quantité minimum</string>
+    <string name="label_desired_quantity">Quantité souhaitée</string>
+    <string name="label_category">Catégorie</string>
+    <string name="button_ok">OK</string>
+    <string name="message_item_edited_by_other_user">L\'item a été modifié par un autre utilisateur, vérifiez les nouvelles valeurs avant de continuer.</string>
 </resources>

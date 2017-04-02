@@ -36,8 +36,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements EditItemDialogFragment.EditItemDialogListener {
     private static final int ITEM_DELETE = 1;
+    private static final String TAG_EDIT_ITEM_FRAGMENT = "TAG_EDIT_ITEM_FRAGMENT";
 
     @Inject
     GroceryListService groceryListService;
@@ -110,11 +111,14 @@ public class MainFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GroceryElementViewModel viewModel = (GroceryElementViewModel) parent.getItemAtPosition(position);
+                final Object listItem = parent.getItemAtPosition(position);
 
-                if (viewModel instanceof GroceryItemViewModel) {
-                    GroceryItem groceryItem = ((GroceryItemViewModel) viewModel).getGroceryItem();
-                    Log.d(TAG, "Clicked grocery item " + groceryItem.label);
+                if (listItem instanceof GroceryItemViewModel) {
+                    GroceryItemViewModel viewModel = (GroceryItemViewModel) listItem;
+                    final GroceryItem groceryItem = viewModel.getGroceryItem();
+                    final EditItemDialogFragment dialog = EditItemDialogFragment.newInstance(groceryItem);
+                    dialog.setTargetFragment(MainFragment.this, 0);
+                    dialog.show(getFragmentManager(), TAG_EDIT_ITEM_FRAGMENT);
                 }
             }
         });
@@ -175,7 +179,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onComplete() {
                         GroceryItemViewModel viewModel = (GroceryItemViewModel) _groceryListAdapter.getItem(info.position);
-                        _groceryListAdapter.removeItem(viewModel.getGroceryItem());
+                        _groceryListAdapter.removeGroceryItem(viewModel.getGroceryItem());
 
                         final String message = getString(R.string.action_item_delete, groceryItem.label);
                         View view = getView();
@@ -207,5 +211,15 @@ public class MainFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         _disposables.dispose();
+    }
+
+    @Override
+    public void onItemEdited(GroceryItem item) {
+        _groceryListAdapter.updateGroceryItem(item);
+    }
+
+    @Override
+    public void onItemRemoved(GroceryItem item) {
+
     }
 }

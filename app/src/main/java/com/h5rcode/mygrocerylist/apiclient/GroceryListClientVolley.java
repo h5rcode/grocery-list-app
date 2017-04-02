@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
@@ -37,7 +38,7 @@ public class GroceryListClientVolley implements GroceryListClient {
     }
 
     @Override
-    public void deleteItem(long id) {
+    public void deleteGroceryItem(long id) {
         final URL url = getUrl("items/" + id);
         final RequestFuture<String> future = RequestFuture.newFuture();
         final StringRequest jsonObjectRequest = new StringRequest(
@@ -56,7 +57,7 @@ public class GroceryListClientVolley implements GroceryListClient {
     }
 
     @Override
-    public List<GroceryItemCategory> getCategories() {
+    public List<GroceryItemCategory> getGroceryItemCategories() {
         final URL url = getUrl("categories");
         final RequestFuture<JSONArray> future = RequestFuture.newFuture();
         final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -102,7 +103,7 @@ public class GroceryListClientVolley implements GroceryListClient {
     }
 
     @Override
-    public List<GroceryItem> getItems() {
+    public List<GroceryItem> getGroceryItems() {
         final URL categoriesUrl = getUrl("items");
         final RequestFuture<JSONArray> future = RequestFuture.newFuture();
         final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -125,8 +126,39 @@ public class GroceryListClientVolley implements GroceryListClient {
     }
 
     @Override
-    public void updateItem(GroceryItem groceryItem) {
+    public int updateGroceryItem(GroceryItem groceryItem) {
+        final URL categoriesUrl = getUrl("items");
 
+        final JSONObject jsonRequest = JsonHelper.serializeObject(groceryItem, GroceryItem.class);
+
+        final RequestFuture<JSONObject> future = RequestFuture.newFuture();
+
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.PUT,
+                categoriesUrl.toString(),
+                jsonRequest,
+                future,
+                future
+        );
+
+        _requestQueue.add(jsonObjectRequest);
+
+        int updateStatusCode;
+        try {
+            future.get();
+            updateStatusCode = 200;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause != null && cause instanceof VolleyError) {
+                updateStatusCode = ((VolleyError) cause).networkResponse.statusCode;
+            } else {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return updateStatusCode;
     }
 
     @NonNull

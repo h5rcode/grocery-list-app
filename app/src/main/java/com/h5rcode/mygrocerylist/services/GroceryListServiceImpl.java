@@ -17,15 +17,30 @@ public class GroceryListServiceImpl implements GroceryListService {
 
     @Override
     public void deleteGroceryItem(long id) {
-        _groceryListClient.deleteItem(id);
+        _groceryListClient.deleteGroceryItem(id);
     }
 
     @Override
     public GroceryList getGroceryList() {
 
-        List<GroceryItem> items = _groceryListClient.getItems();
-        List<GroceryItemCategory> categories = _groceryListClient.getCategories();
+        List<GroceryItem> items = _groceryListClient.getGroceryItems();
+        List<GroceryItemCategory> categories = _groceryListClient.getGroceryItemCategories();
 
         return new GroceryList(categories, items);
+    }
+
+    @Override
+    public List<GroceryItemCategory> getCategoryItemCategories() {
+        return _groceryListClient.getGroceryItemCategories();
+    }
+
+    @Override
+    public int updateGroceryItem(GroceryItem groceryItem) {
+        return _groceryListClient.updateGroceryItem(groceryItem);
+    }
+
+    @Override
+    public GroceryItem getGroceryItem(long id) {
+        return _groceryListClient.getItem(id);
     }
 }
