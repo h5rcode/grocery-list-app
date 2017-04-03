@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,11 @@ public final class JsonHelper {
         }
 
         for (final Field field : type.getFields()) {
+            int modifiers = field.getModifiers();
+            if (Modifier.isFinal(modifiers)) {
+                continue;
+            }
+
             final String fieldName = field.getName();
 
             Object fieldValue;

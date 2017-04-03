@@ -6,13 +6,23 @@
     <string name="main_menu_settings">Paramètres</string>
     <string name="menu_grocery_item_delete">Supprimer</string>
     <string name="action_item_delete">L\'item "%s" a bien été supprimé.</string>
-    <string name="error_loading_grocery_list">Une erreur est survenue lors du chargement de la liste des courses.</string>
+    <string name="error_loading_grocery_list">Une erreur est survenue lors du chargement de la liste des courses : %s.</string>
     <string name="activity_main">Liste des courses</string>
-    <string name="error_deleting_item">Une erreur est survenue lors de la suppression de l\'item.</string>
+    <string name="error_deleting_item">Une erreur est survenue lors de la suppression de l\'item : %s.</string>
     <string name="label_current_quantity">Quantité actuelle</string>
     <string name="label_minimum_quantity">Quantité minimum</string>
     <string name="label_desired_quantity">Quantité souhaitée</string>
     <string name="label_category">Catégorie</string>
     <string name="button_ok">OK</string>
     <string name="message_item_edited_by_other_user">L\'item a été modifié par un autre utilisateur, vérifiez les nouvelles valeurs avant de continuer.</string>
+    <string name="message_item_removed_by_other_user">L\'item a été supprimé par un autre utilisateur.</string>
+    <string name="error_loading_grocery_list_categories">Une erreur est survenue au chargement des catégories : %s.</string>
+    <string name="error_updating_item">Une erreur est survenue lors de la mise à jour de l\'item: %s.</string>
+    <string name="label_label">Libellé</string>
+    <string name="title_dialog_add_item">Ajouter un item.</string>
+    <string name="info_mandatory_field">Ce champ est obligatoire.</string>
+    <string name="info_desired_quantity_must_be_greater_than_minimum_quantity">La quantité souhaitée doit être supérieure ou égale à la quantité minimum.</string>
+    <string name="button_cancel_add_item">Annuler</string>
+    <string name="button_save_item">OK</string>
+    <string name="error_adding_item">Une erreur est survenue lors de l\'ajout de l\'item : %s.</string>
 </resources>

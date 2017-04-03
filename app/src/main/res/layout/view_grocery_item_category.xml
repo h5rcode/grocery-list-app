@@ -10,17 +10,9 @@
     android:paddingStart="10sp"
     android:paddingTop="7sp">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="5sp"
-        android:paddingRight="5sp"
-        android:src="@drawable/ic_grocery_item_category" />
-
     <TextView
         android:id="@+id/category_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:textStyle="bold" />
 </LinearLayout>

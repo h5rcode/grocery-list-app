@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false">
-    <fragment android:name="com.h5rcode.mygrocerylist.fragments.MainFragment"
+    <fragment android:name="com.h5rcode.mygrocerylist.fragments.grocerylist.MainFragment"
         android:id="@+id/fragment_main"
         android:layout_weight="1"
         android:layout_width="0dp"

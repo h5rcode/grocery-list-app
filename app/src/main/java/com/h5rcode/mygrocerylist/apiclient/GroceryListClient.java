@@ -1,12 +1,13 @@
 package com.h5rcode.mygrocerylist.apiclient;
 
+import com.h5rcode.mygrocerylist.apiclient.models.ApiResponse;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItemCategory;
 
 import java.util.List;
 
 public interface GroceryListClient {
-    void addItem(GroceryItem groceryItem);
+    GroceryItem addGroceryItem(GroceryItem groceryItem);
 
     void deleteGroceryItem(long id);
 
@@ -16,5 +17,5 @@ public interface GroceryListClient {
 
     List<GroceryItem> getGroceryItems();
 
-    int updateGroceryItem(GroceryItem groceryItem);
+    ApiResponse<GroceryItem> updateGroceryItem(GroceryItem groceryItem);
 }

@@ -9,6 +9,12 @@ import com.h5rcode.mygrocerylist.apiclient.GroceryListClient;
 import com.h5rcode.mygrocerylist.apiclient.GroceryListClientVolley;
 import com.h5rcode.mygrocerylist.configuration.ClientConfiguration;
 import com.h5rcode.mygrocerylist.configuration.ClientConfigurationImpl;
+import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemPresenter;
+import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemPresenterImpl;
+import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemPresenter;
+import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemPresenterImpl;
+import com.h5rcode.mygrocerylist.fragments.grocerylist.GroceryListPresenter;
+import com.h5rcode.mygrocerylist.fragments.grocerylist.GroceryListPresenterImpl;
 import com.h5rcode.mygrocerylist.services.GroceryListService;
 import com.h5rcode.mygrocerylist.services.GroceryListServiceImpl;
 
@@ -48,7 +54,22 @@ public class ServiceModule {
     }
 
     @Provides
-    GroceryListService provideGroceryListController(GroceryListClient groceryListClient) {
+    GroceryListService provideGroceryListService(GroceryListClient groceryListClient) {
         return new GroceryListServiceImpl(groceryListClient);
+    }
+
+    @Provides
+    GroceryListPresenter provideGroceryListPresenter(GroceryListService groceryListService) {
+        return new GroceryListPresenterImpl(groceryListService);
+    }
+
+    @Provides
+    AddGroceryItemPresenter provideAddGroceryItemPresenter(GroceryListService groceryListService) {
+        return new AddGroceryItemPresenterImpl(groceryListService);
+    }
+
+    @Provides
+    EditGroceryItemPresenter provideEditGroceryItemPresenter(GroceryListService groceryListService) {
+        return new EditGroceryItemPresenterImpl(groceryListService);
     }
 }

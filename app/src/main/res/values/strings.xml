@@ -6,13 +6,23 @@
     <string name="main_menu_settings">Settings</string>
     <string name="menu_grocery_item_delete">Delete</string>
     <string name="action_item_delete">Item \"%s\" was removed.</string>
-    <string name="error_loading_grocery_list">An error occurred when loading the grocery list.</string>
+    <string name="error_loading_grocery_list">An error occurred when loading the grocery list: %s.</string>
     <string name="activity_main">Grocery list</string>
-    <string name="error_deleting_item">An error occurred when deleting the grocery item.</string>
+    <string name="error_deleting_item">An error occurred when deleting the grocery item : %s.</string>
     <string name="label_current_quantity">Current quantity</string>
     <string name="label_minimum_quantity">Minimum quantity</string>
     <string name="label_desired_quantity">Desired quantity</string>
     <string name="label_category">Category</string>
     <string name="button_ok">OK</string>
     <string name="message_item_edited_by_other_user">The item has been updated by an other user, check the new values before you continue.</string>
+    <string name="message_item_removed_by_other_user">The item was removed by an other user.</string>
+    <string name="error_loading_grocery_list_categories">An error occurred when loading grocery item categories: %s.</string>
+    <string name="error_updating_item">An error occurred when updating the item: %s.</string>
+    <string name="label_label">Label</string>
+    <string name="title_dialog_add_item">Add an item</string>
+    <string name="info_mandatory_field">This field is mandatory.</string>
+    <string name="info_desired_quantity_must_be_greater_than_minimum_quantity">The desired quantity must be greater or equal to the minimum quantity.</string>
+    <string name="button_cancel_add_item">Cancel</string>
+    <string name="button_save_item">OK</string>
+    <string name="error_adding_item">An error occurred when adding the item: %s.</string>
 </resources>

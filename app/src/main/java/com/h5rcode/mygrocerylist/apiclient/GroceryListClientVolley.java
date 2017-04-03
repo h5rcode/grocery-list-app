@@ -10,6 +10,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.h5rcode.mygrocerylist.apiclient.helpers.JsonHelper;
+import com.h5rcode.mygrocerylist.apiclient.models.ApiResponse;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItemCategory;
 import com.h5rcode.mygrocerylist.configuration.ClientConfiguration;
@@ -33,8 +34,32 @@ public class GroceryListClientVolley implements GroceryListClient {
     }
 
     @Override
-    public void addItem(GroceryItem groceryItem) {
+    public GroceryItem addGroceryItem(GroceryItem groceryItem) {
+        final URL itemsUrl = getUrl("items");
 
+        final JSONObject jsonRequest = JsonHelper.serializeObject(groceryItem, GroceryItem.class);
+
+        final RequestFuture<JSONObject> future = RequestFuture.newFuture();
+
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                itemsUrl.toString(),
+                jsonRequest,
+                future,
+                future
+        );
+
+        _requestQueue.add(jsonObjectRequest);
+
+        GroceryItem returnedGroceryItem;
+        try {
+            JSONObject jsonObject = future.get();
+            returnedGroceryItem = JsonHelper.parseJSONObject(jsonObject, GroceryItem.class);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return returnedGroceryItem;
     }
 
     @Override
@@ -92,14 +117,22 @@ public class GroceryListClientVolley implements GroceryListClient {
 
         _requestQueue.add(jsonObjectRequest);
 
-        JSONObject jsonObject;
+        GroceryItem groceryItem;
         try {
-            jsonObject = future.get();
-        } catch (ExecutionException | InterruptedException e) {
+            JSONObject jsonObject = future.get();
+            groceryItem = JsonHelper.parseJSONObject(jsonObject, GroceryItem.class);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause != null && cause instanceof VolleyError && ((VolleyError) cause).networkResponse.statusCode == 404) {
+                groceryItem = null;
+            } else {
+                throw new RuntimeException(e);
+            }
         }
 
-        return JsonHelper.parseJSONObject(jsonObject, GroceryItem.class);
+        return groceryItem;
     }
 
     @Override
@@ -126,7 +159,7 @@ public class GroceryListClientVolley implements GroceryListClient {
     }
 
     @Override
-    public int updateGroceryItem(GroceryItem groceryItem) {
+    public ApiResponse<GroceryItem> updateGroceryItem(GroceryItem groceryItem) {
         final URL categoriesUrl = getUrl("items");
 
         final JSONObject jsonRequest = JsonHelper.serializeObject(groceryItem, GroceryItem.class);
@@ -143,9 +176,11 @@ public class GroceryListClientVolley implements GroceryListClient {
 
         _requestQueue.add(jsonObjectRequest);
 
+        GroceryItem returnedGroceryItem;
         int updateStatusCode;
         try {
-            future.get();
+            JSONObject jsonObject = future.get();
+            returnedGroceryItem = JsonHelper.parseJSONObject(jsonObject, GroceryItem.class);
             updateStatusCode = 200;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -153,12 +188,13 @@ public class GroceryListClientVolley implements GroceryListClient {
             Throwable cause = e.getCause();
             if (cause != null && cause instanceof VolleyError) {
                 updateStatusCode = ((VolleyError) cause).networkResponse.statusCode;
+                returnedGroceryItem = null;
             } else {
                 throw new RuntimeException(e);
             }
         }
 
-        return updateStatusCode;
+        return new ApiResponse<>(updateStatusCode, returnedGroceryItem);
     }
 
     @NonNull

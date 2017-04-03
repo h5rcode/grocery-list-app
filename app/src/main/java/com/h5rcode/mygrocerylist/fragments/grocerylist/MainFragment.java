@@ -1,4 +1,4 @@
-package com.h5rcode.mygrocerylist.fragments;
+package com.h5rcode.mygrocerylist.fragments.grocerylist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,30 +21,20 @@ import com.h5rcode.mygrocerylist.adapters.GroceryListAdapter;
 import com.h5rcode.mygrocerylist.adapters.viewmodels.GroceryElementViewModel;
 import com.h5rcode.mygrocerylist.adapters.viewmodels.GroceryItemViewModel;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
-import com.h5rcode.mygrocerylist.services.GroceryListService;
+import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemDialogFragment;
+import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemDialogFragment;
 import com.h5rcode.mygrocerylist.services.models.GroceryList;
-
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
-
-public class MainFragment extends Fragment implements EditItemDialogFragment.EditItemDialogListener {
+public class MainFragment extends Fragment implements AddGroceryItemDialogFragment.AddItemDialogListener, EditGroceryItemDialogFragment.EditItemDialogListener, GroceryListView {
     private static final int ITEM_DELETE = 1;
+    private static final String TAG = MainFragment.class.getName();
     private static final String TAG_EDIT_ITEM_FRAGMENT = "TAG_EDIT_ITEM_FRAGMENT";
+    private static final String TAG_ADD_ITEM_FRAGMENT = "TAG_ADD_ITEM_FRAGMENT";
 
     @Inject
-    GroceryListService groceryListService;
-
-    private static String TAG = MainFragment.class.getName();
-    private CompositeDisposable _disposables = new CompositeDisposable();
+    GroceryListPresenter _groceryListPresenter;
 
     private GroceryListAdapter _groceryListAdapter;
 
@@ -57,40 +47,8 @@ public class MainFragment extends Fragment implements EditItemDialogFragment.Edi
 
         ((MyGroceryListApp) getActivity().getApplication()).getServiceComponent().inject(this);
 
-        Observable<GroceryList> elementsObservable = Observable.fromCallable(new Callable<GroceryList>() {
-            @Override
-            public GroceryList call() throws Exception {
-                return groceryListService.getGroceryList();
-            }
-        });
-
-        DisposableObserver<GroceryList> elementsObserver = new DisposableObserver<GroceryList>() {
-            @Override
-            public void onNext(GroceryList groceryList) {
-                _groceryListAdapter.initialize(groceryList);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "An error occurred when loading the grocery list.", e);
-                View view = getView();
-                if (view != null) {
-                    Snackbar.make(view, getString(R.string.error_loading_grocery_list), Snackbar.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onComplete() {
-                // Do nothing.
-            }
-        };
-
-        _disposables.add(elementsObserver);
-
-        elementsObservable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(elementsObserver);
+        _groceryListPresenter.setGroceryListView(this);
+        _groceryListPresenter.onCreate();
     }
 
     @Nullable
@@ -103,6 +61,10 @@ public class MainFragment extends Fragment implements EditItemDialogFragment.Edi
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Add button clicked.");
+
+                AddGroceryItemDialogFragment dialog = new AddGroceryItemDialogFragment();
+                dialog.setTargetFragment(MainFragment.this, 0);
+                dialog.show(getFragmentManager(), TAG_ADD_ITEM_FRAGMENT);
             }
         });
 
@@ -115,8 +77,8 @@ public class MainFragment extends Fragment implements EditItemDialogFragment.Edi
 
                 if (listItem instanceof GroceryItemViewModel) {
                     GroceryItemViewModel viewModel = (GroceryItemViewModel) listItem;
-                    final GroceryItem groceryItem = viewModel.getGroceryItem();
-                    final EditItemDialogFragment dialog = EditItemDialogFragment.newInstance(groceryItem);
+                    GroceryItem groceryItem = viewModel.getGroceryItem();
+                    EditGroceryItemDialogFragment dialog = EditGroceryItemDialogFragment.newInstance(groceryItem);
                     dialog.setTargetFragment(MainFragment.this, 0);
                     dialog.show(getFragmentManager(), TAG_EDIT_ITEM_FRAGMENT);
                 }
@@ -152,50 +114,7 @@ public class MainFragment extends Fragment implements EditItemDialogFragment.Edi
                 final GroceryItemViewModel groceryItemViewModel = (GroceryItemViewModel) _groceryListAdapter.getItem(info.position);
                 final GroceryItem groceryItem = groceryItemViewModel.getGroceryItem();
                 final long id = groceryItem.id;
-
-                Observable<Void> deletionObservable = Observable.create(new ObservableOnSubscribe<Void>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<Void> e) throws Exception {
-                        groceryListService.deleteGroceryItem(id);
-                        e.onComplete();
-                    }
-                });
-
-                DisposableObserver<Void> deletionObserver = new DisposableObserver<Void>() {
-                    @Override
-                    public void onNext(Void value) {
-                        // Do nothing.
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "Error on delete.", e);
-                        View view = getView();
-                        if (view != null) {
-                            Snackbar.make(view, R.string.error_deleting_item, Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        GroceryItemViewModel viewModel = (GroceryItemViewModel) _groceryListAdapter.getItem(info.position);
-                        _groceryListAdapter.removeGroceryItem(viewModel.getGroceryItem());
-
-                        final String message = getString(R.string.action_item_delete, groceryItem.label);
-                        View view = getView();
-                        if (view != null) {
-                            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                };
-
-                deletionObservable
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(deletionObserver);
-
-                _disposables.add(deletionObserver);
-
+                _groceryListPresenter.onDeleteItem(id);
                 result = true;
                 break;
 
@@ -210,7 +129,7 @@ public class MainFragment extends Fragment implements EditItemDialogFragment.Edi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        _disposables.dispose();
+        _groceryListPresenter.onDestroy();
     }
 
     @Override
@@ -220,6 +139,39 @@ public class MainFragment extends Fragment implements EditItemDialogFragment.Edi
 
     @Override
     public void onItemRemoved(GroceryItem item) {
+        _groceryListAdapter.removeGroceryItem(item.id);
+    }
 
+    @Override
+    public void onGroceryListLoaded(GroceryList groceryList) {
+        _groceryListAdapter.initialize(groceryList);
+    }
+
+    @Override
+    public void onItemDeleted(long id) {
+        _groceryListAdapter.removeGroceryItem(id);
+    }
+
+    @Override
+    public void onLoadGroceryListError(Throwable e) {
+        Log.e(TAG, "An error occurred when loading the grocery list.", e);
+        View view = getView();
+        if (view != null) {
+            Snackbar.make(view, getString(R.string.error_loading_grocery_list, e.getMessage()), Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onDeleteItemError(Throwable e) {
+        Log.e(TAG, "An error occurred when deleting an item.", e);
+        View view = getView();
+        if (view != null) {
+            Snackbar.make(view, getString(R.string.error_deleting_item, e.getMessage()), Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onSave(GroceryItem groceryItem) {
+        _groceryListAdapter.addGroceryItem(groceryItem);
     }
 }

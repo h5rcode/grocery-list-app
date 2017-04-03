@@ -1,4 +1,4 @@
-package com.h5rcode.mygrocerylist.fragments;
+package com.h5rcode.mygrocerylist.fragments.settings;
 
 import android.os.Bundle;
 import android.preference.Preference;
