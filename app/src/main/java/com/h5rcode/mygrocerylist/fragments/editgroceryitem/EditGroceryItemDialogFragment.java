@@ -128,8 +128,6 @@ public class EditGroceryItemDialogFragment extends DialogFragment implements Edi
             }
         });
 
-        editGroceryItemPresenter.onCreateDialog();
-
         _spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

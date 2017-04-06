@@ -19,7 +19,7 @@
     <string name="error_loading_grocery_list_categories">Une erreur est survenue au chargement des catégories : %s.</string>
     <string name="error_updating_item">Une erreur est survenue lors de la mise à jour de l\'item: %s.</string>
     <string name="label_label">Libellé</string>
-    <string name="title_dialog_add_item">Ajouter un item.</string>
+    <string name="title_dialog_add_item">Ajouter un item</string>
     <string name="info_mandatory_field">Ce champ est obligatoire.</string>
     <string name="info_desired_quantity_must_be_greater_than_minimum_quantity">La quantité souhaitée doit être supérieure ou égale à la quantité minimum.</string>
     <string name="button_cancel_add_item">Annuler</string>
