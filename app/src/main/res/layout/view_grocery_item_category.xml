@@ -2,17 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingBottom="7sp"
     android:paddingEnd="10sp"
     android:paddingLeft="10sp"
     android:paddingRight="10sp"
-    android:paddingStart="10sp"
-    android:paddingTop="7sp">
+    android:paddingStart="10sp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5sp"
+        android:background="@color/grey" />
 
     <TextView
         android:id="@+id/category_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="7sp"
+        android:textAllCaps="true"
         android:textStyle="bold" />
+
 </LinearLayout>

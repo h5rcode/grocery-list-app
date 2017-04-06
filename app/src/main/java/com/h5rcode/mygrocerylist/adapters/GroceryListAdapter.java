@@ -1,10 +1,11 @@
 package com.h5rcode.mygrocerylist.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,15 @@ public class GroceryListAdapter extends BaseAdapter {
     private final List<GroceryElementViewModel> _viewModels = new ArrayList<>();
     private LayoutInflater _layoutInflater;
 
+    private final int _redColor;
+    private final int _lightGreenColor;
+
     public GroceryListAdapter(Context context) {
+
+        Resources resources = context.getResources();
+        _redColor = ResourcesCompat.getColor(resources, R.color.red, null);
+        _lightGreenColor = ResourcesCompat.getColor(resources, R.color.lightGreen, null);
+
         _layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -163,9 +172,9 @@ public class GroceryListAdapter extends BaseAdapter {
 
         int color;
         if (item.currentQuantity >= item.minimumQuantity) {
-            color = Color.GREEN;
+            color = _lightGreenColor;
         } else {
-            color = Color.RED;
+            color = _redColor;
         }
 
         progressBar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
