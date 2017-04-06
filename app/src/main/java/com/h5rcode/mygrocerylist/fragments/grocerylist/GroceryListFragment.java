@@ -27,9 +27,9 @@ import com.h5rcode.mygrocerylist.services.models.GroceryList;
 
 import javax.inject.Inject;
 
-public class MainFragment extends Fragment implements AddGroceryItemDialogFragment.AddItemDialogListener, EditGroceryItemDialogFragment.EditItemDialogListener, GroceryListView {
+public class GroceryListFragment extends Fragment implements AddGroceryItemDialogFragment.AddItemDialogListener, EditGroceryItemDialogFragment.EditItemDialogListener, GroceryListView {
     private static final int ITEM_DELETE = 1;
-    private static final String TAG = MainFragment.class.getName();
+    private static final String TAG = GroceryListFragment.class.getName();
     private static final String TAG_EDIT_ITEM_FRAGMENT = "TAG_EDIT_ITEM_FRAGMENT";
     private static final String TAG_ADD_ITEM_FRAGMENT = "TAG_ADD_ITEM_FRAGMENT";
 
@@ -54,7 +54,7 @@ public class MainFragment extends Fragment implements AddGroceryItemDialogFragme
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
 
         FloatingActionButton buttonAddGroceryItem = (FloatingActionButton) view.findViewById(R.id.button_add_item);
         buttonAddGroceryItem.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +63,7 @@ public class MainFragment extends Fragment implements AddGroceryItemDialogFragme
                 Log.d(TAG, "Add button clicked.");
 
                 AddGroceryItemDialogFragment dialog = new AddGroceryItemDialogFragment();
-                dialog.setTargetFragment(MainFragment.this, 0);
+                dialog.setTargetFragment(GroceryListFragment.this, 0);
                 dialog.show(getFragmentManager(), TAG_ADD_ITEM_FRAGMENT);
             }
         });
@@ -79,7 +79,7 @@ public class MainFragment extends Fragment implements AddGroceryItemDialogFragme
                     GroceryItemViewModel viewModel = (GroceryItemViewModel) listItem;
                     GroceryItem groceryItem = viewModel.getGroceryItem();
                     EditGroceryItemDialogFragment dialog = EditGroceryItemDialogFragment.newInstance(groceryItem);
-                    dialog.setTargetFragment(MainFragment.this, 0);
+                    dialog.setTargetFragment(GroceryListFragment.this, 0);
                     dialog.show(getFragmentManager(), TAG_EDIT_ITEM_FRAGMENT);
                 }
             }
