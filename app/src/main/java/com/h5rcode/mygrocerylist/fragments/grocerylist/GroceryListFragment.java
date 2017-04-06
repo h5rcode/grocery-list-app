@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
     @Inject
     GroceryListPresenter _groceryListPresenter;
 
+    private SwipeRefreshLayout _swipeRefreshLayout;
     private GroceryListAdapter _groceryListAdapter;
 
     @Override
@@ -48,13 +50,21 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
         ((MyGroceryListApp) getActivity().getApplication()).getServiceComponent().inject(this);
 
         _groceryListPresenter.setGroceryListView(this);
-        _groceryListPresenter.onCreate();
+        _groceryListPresenter.loadGroceryList();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_grocery_list, container, false);
+
+        _swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.item_list_swipe_refresh_layout);
+        _swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                _groceryListPresenter.loadGroceryList();
+            }
+        });
 
         FloatingActionButton buttonAddGroceryItem = (FloatingActionButton) view.findViewById(R.id.button_add_item);
         buttonAddGroceryItem.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +155,7 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
     @Override
     public void onGroceryListLoaded(GroceryList groceryList) {
         _groceryListAdapter.initialize(groceryList);
+        _swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -155,6 +166,9 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
     @Override
     public void onLoadGroceryListError(Throwable e) {
         Log.e(TAG, "An error occurred when loading the grocery list.", e);
+
+        _swipeRefreshLayout.setRefreshing(false);
+
         View view = getView();
         if (view != null) {
             Snackbar.make(view, getString(R.string.error_loading_grocery_list, e.getMessage()), Snackbar.LENGTH_LONG).show();

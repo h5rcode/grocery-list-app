@@ -24,7 +24,7 @@ public class GroceryListPresenterImpl implements GroceryListPresenter {
     }
 
     @Override
-    public void onCreate() {
+    public void loadGroceryList() {
         Observable<GroceryList> elementsObservable = Observable.fromCallable(new Callable<GroceryList>() {
             @Override
             public GroceryList call() throws Exception {

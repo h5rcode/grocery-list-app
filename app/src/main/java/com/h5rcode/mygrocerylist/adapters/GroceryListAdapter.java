@@ -47,24 +47,23 @@ public class GroceryListAdapter extends BaseAdapter {
     }
 
     public void initialize(GroceryList groceryList) {
+        _groceryItems.clear();
+        _groceryItemCategories.clear();
+
         _groceryItemCategories.addAll(groceryList.getGroceryItemCategories());
         _groceryItems.addAll(groceryList.getGroceryItems());
-        computeViewModels();
-
-        notifyDataSetChanged();
+        computeViewModelsAndNotifyDatasetChanged();
     }
 
     public void addGroceryItem(GroceryItem groceryItem) {
         _groceryItems.add(groceryItem);
-        computeViewModels();
-        notifyDataSetChanged();
+        computeViewModelsAndNotifyDatasetChanged();
     }
 
     public void removeGroceryItem(long id) {
         GroceryItem groceryItem = getGroceryItem(id);
         _groceryItems.remove(groceryItem);
-        computeViewModels();
-        notifyDataSetChanged();
+        computeViewModelsAndNotifyDatasetChanged();
     }
 
     public void updateGroceryItem(GroceryItem newGroceryItem) {
@@ -76,8 +75,7 @@ public class GroceryListAdapter extends BaseAdapter {
         _groceryItems.remove(index);
         _groceryItems.add(index, newGroceryItem);
 
-        computeViewModels();
-        notifyDataSetChanged();
+        computeViewModelsAndNotifyDatasetChanged();
     }
 
     @Override
@@ -146,6 +144,11 @@ public class GroceryListAdapter extends BaseAdapter {
                 }
             }
         }
+    }
+
+    private void computeViewModelsAndNotifyDatasetChanged() {
+        computeViewModels();
+        notifyDataSetChanged();
     }
 
     @Nullable

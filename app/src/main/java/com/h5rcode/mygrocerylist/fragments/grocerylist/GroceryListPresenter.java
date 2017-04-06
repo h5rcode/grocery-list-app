@@ -1,7 +1,7 @@
 package com.h5rcode.mygrocerylist.fragments.grocerylist;
 
 public interface GroceryListPresenter {
-    void onCreate();
+    void loadGroceryList();
 
     void onDeleteItem(long id);
 
