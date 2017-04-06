@@ -23,7 +23,8 @@
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/activity_settings" />
+            android:label="@string/activity_settings"
+            android:parentActivityName=".activities.MainActivity" />
     </application>
 
 </manifest>
