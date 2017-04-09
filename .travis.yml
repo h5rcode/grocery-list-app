@@ -11,5 +11,7 @@ android:
     - platform-tools
     - build-tools-25.0.2
     - android-25
+    
+    - sys-img-armeabi-v7a-android-22
   licenses:
     - 'android-sdk-license-.+'
