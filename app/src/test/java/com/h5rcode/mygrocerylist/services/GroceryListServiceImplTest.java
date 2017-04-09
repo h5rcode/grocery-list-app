@@ -18,7 +18,6 @@ import java.util.Random;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -161,10 +160,5 @@ public class GroceryListServiceImplTest {
         GroceryItem groceryItemReturnedByService = groceryListService.getGroceryItem(id);
 
         assertEquals(groceryItem, groceryItemReturnedByService);
-    }
-
-    @Test
-    public void test_should_fail() throws Exception {
-        assertTrue(false);
     }
 }
