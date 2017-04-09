@@ -67,7 +67,7 @@ public class AddGroceryItemPresenterImpl implements AddGroceryItemPresenter {
         Observable<List<GroceryItemCategory>> categoriesObservable = Observable.fromCallable(new Callable<List<GroceryItemCategory>>() {
             @Override
             public List<GroceryItemCategory> call() throws Exception {
-                return _groceryListService.getCategoryItemCategories();
+                return _groceryListService.getGroceryItemCategories();
             }
         });
 

@@ -32,7 +32,7 @@ public class GroceryListServiceImpl implements GroceryListService {
     }
 
     @Override
-    public List<GroceryItemCategory> getCategoryItemCategories() {
+    public List<GroceryItemCategory> getGroceryItemCategories() {
         return _groceryListClient.getGroceryItemCategories();
     }
 

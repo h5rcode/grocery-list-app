@@ -35,7 +35,7 @@ public class EditGroceryItemPresenterImpl implements EditGroceryItemPresenter {
         Observable<List<GroceryItemCategory>> categoriesObservable = Observable.fromCallable(new Callable<List<GroceryItemCategory>>() {
             @Override
             public List<GroceryItemCategory> call() throws Exception {
-                return _groceryListService.getCategoryItemCategories();
+                return _groceryListService.getGroceryItemCategories();
             }
         });
 

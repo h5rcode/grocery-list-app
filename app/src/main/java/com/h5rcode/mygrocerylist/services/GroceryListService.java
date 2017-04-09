@@ -12,7 +12,7 @@ public interface GroceryListService {
 
     GroceryList getGroceryList();
 
-    List<GroceryItemCategory> getCategoryItemCategories();
+    List<GroceryItemCategory> getGroceryItemCategories();
 
     GroceryItemUpdateResult updateGroceryItem(GroceryItem groceryItem);
 
