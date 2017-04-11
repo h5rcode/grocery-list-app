@@ -25,4 +25,9 @@
     <string name="button_cancel_add_item">Annuler</string>
     <string name="button_save_item">OK</string>
     <string name="error_adding_item">Une erreur est survenue lors de l\'ajout de l\'item : %s.</string>
+    <string name="pref_interval_between_quantity_checks_summary">Intervalle en minutes entre deux vérifications des quantités d\'articles.</string>
+    <string name="pref_interval_between_quantity_checks">Minutes entre deux vérifications des quantités</string>
+    <string name="pref_enable_quantity_checks_summary">Cette option active une tâche de fond qui vérifiera périodiquement si les quantités d\'articles ne sont pas trop faibles.</string>
+    <string name="pref_enable_quantity_checks">Activer la vérification des quantités</string>
+    <string name="notification_message">Il est temps d\'aller faire des courses !</string>
 </resources>

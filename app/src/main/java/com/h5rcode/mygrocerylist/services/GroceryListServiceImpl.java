@@ -4,6 +4,7 @@ import com.h5rcode.mygrocerylist.apiclient.GroceryListClient;
 import com.h5rcode.mygrocerylist.apiclient.models.ApiResponse;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItemCategory;
+import com.h5rcode.mygrocerylist.apiclient.models.ItemsQuantityRatioInfo;
 import com.h5rcode.mygrocerylist.services.models.GroceryItemUpdateResult;
 import com.h5rcode.mygrocerylist.services.models.GroceryList;
 
@@ -34,6 +35,11 @@ public class GroceryListServiceImpl implements GroceryListService {
     @Override
     public List<GroceryItemCategory> getGroceryItemCategories() {
         return _groceryListClient.getGroceryItemCategories();
+    }
+
+    @Override
+    public ItemsQuantityRatioInfo getItemsQuantityRatioInfo() {
+        return _groceryListClient.getItemsQuantityRatioInfo();
     }
 
     @Override

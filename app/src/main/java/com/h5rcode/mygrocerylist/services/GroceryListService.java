@@ -2,6 +2,7 @@ package com.h5rcode.mygrocerylist.services;
 
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItemCategory;
+import com.h5rcode.mygrocerylist.apiclient.models.ItemsQuantityRatioInfo;
 import com.h5rcode.mygrocerylist.services.models.GroceryItemUpdateResult;
 import com.h5rcode.mygrocerylist.services.models.GroceryList;
 
@@ -13,6 +14,8 @@ public interface GroceryListService {
     GroceryList getGroceryList();
 
     List<GroceryItemCategory> getGroceryItemCategories();
+
+    ItemsQuantityRatioInfo getItemsQuantityRatioInfo();
 
     GroceryItemUpdateResult updateGroceryItem(GroceryItem groceryItem);
 

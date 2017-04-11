@@ -4,6 +4,8 @@ import com.h5rcode.mygrocerylist.dependencies.modules.ServiceModule;
 import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemDialogFragment;
 import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemDialogFragment;
 import com.h5rcode.mygrocerylist.fragments.grocerylist.GroceryListFragment;
+import com.h5rcode.mygrocerylist.fragments.settings.SettingsFragment;
+import com.h5rcode.mygrocerylist.jobs.GroceryListJob;
 
 import javax.inject.Singleton;
 
@@ -17,4 +19,8 @@ public interface ServiceComponent {
     void inject(EditGroceryItemDialogFragment editGroceryItemDialogFragment);
 
     void inject(AddGroceryItemDialogFragment addGroceryItemDialogFragment);
+
+    void inject(SettingsFragment settingsFragment);
+
+    void inject(GroceryListJob groceryListJob);
 }

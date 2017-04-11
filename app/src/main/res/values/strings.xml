@@ -25,4 +25,9 @@
     <string name="button_cancel_add_item">Cancel</string>
     <string name="button_save_item">OK</string>
     <string name="error_adding_item">An error occurred when adding the item: %s.</string>
+    <string name="pref_interval_between_quantity_checks_summary">Interval in minutes between two checks of the grocery list quantities.</string>
+    <string name="pref_interval_between_quantity_checks">Minutes between two quantity checks</string>
+    <string name="pref_enable_quantity_checks_summary">This option activates the scheduling of a background task that will periodically check if the item quantities ar not too low.</string>
+    <string name="pref_enable_quantity_checks">Enable quantity checks</string>
+    <string name="notification_message">It\'s time to run errands!</string>
 </resources>

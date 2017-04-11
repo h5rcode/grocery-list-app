@@ -25,6 +25,10 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/activity_settings"
             android:parentActivityName=".activities.GroceryListActivity" />
+
+        <service
+            android:name=".jobs.GroceryListJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

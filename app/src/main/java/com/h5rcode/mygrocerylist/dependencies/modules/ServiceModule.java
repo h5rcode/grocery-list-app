@@ -9,6 +9,8 @@ import com.h5rcode.mygrocerylist.apiclient.GroceryListClient;
 import com.h5rcode.mygrocerylist.apiclient.GroceryListClientVolley;
 import com.h5rcode.mygrocerylist.configuration.ClientConfiguration;
 import com.h5rcode.mygrocerylist.configuration.ClientConfigurationImpl;
+import com.h5rcode.mygrocerylist.configuration.JobConfiguration;
+import com.h5rcode.mygrocerylist.configuration.JobConfigurationImpl;
 import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemPresenter;
 import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemPresenterImpl;
 import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemPresenter;
@@ -46,6 +48,11 @@ public class ServiceModule {
     @Provides
     ClientConfiguration provideGroceryListClientConfiguration(Context context) {
         return new ClientConfigurationImpl(context);
+    }
+
+    @Provides
+    JobConfiguration provideJobConfiguration(Context context) {
+        return new JobConfigurationImpl(context);
     }
 
     @Provides

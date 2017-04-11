@@ -13,6 +13,7 @@ import com.h5rcode.mygrocerylist.apiclient.helpers.JsonHelper;
 import com.h5rcode.mygrocerylist.apiclient.models.ApiResponse;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItemCategory;
+import com.h5rcode.mygrocerylist.apiclient.models.ItemsQuantityRatioInfo;
 import com.h5rcode.mygrocerylist.configuration.ClientConfiguration;
 
 import org.json.JSONArray;
@@ -102,6 +103,29 @@ public class GroceryListClientVolley implements GroceryListClient {
         }
 
         return JsonHelper.parseJSONArray(jsonArray, GroceryItemCategory.class);
+    }
+
+    @Override
+    public ItemsQuantityRatioInfo getItemsQuantityRatioInfo() {
+        final URL url = getUrl("info/low-quantities-ratio");
+        final RequestFuture<JSONObject> future = RequestFuture.newFuture();
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url.toString(),
+                null,
+                future,
+                future);
+
+        _requestQueue.add(jsonObjectRequest);
+
+        JSONObject jsonObject;
+        try {
+            jsonObject = future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return JsonHelper.parseJSONObject(jsonObject, ItemsQuantityRatioInfo.class);
     }
 
     @Override
