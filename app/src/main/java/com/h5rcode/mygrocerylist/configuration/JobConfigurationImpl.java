@@ -9,7 +9,7 @@ import com.h5rcode.mygrocerylist.constants.PreferenceName;
 import javax.inject.Inject;
 
 public class JobConfigurationImpl implements JobConfiguration {
-    private final static int DEFAULT_MINUTES_BETWEEN_QUANTITY_CHECKS = 5;
+    private final static int DEFAULT_MINUTES_BETWEEN_QUANTITY_CHECKS = 30;
 
     private final Context _context;
 

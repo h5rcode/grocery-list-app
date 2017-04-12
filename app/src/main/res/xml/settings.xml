@@ -8,12 +8,14 @@
 
     <SwitchPreference
         android:id="@+id/pref_enable_quantity_checks"
+        android:defaultValue="false"
         android:key="pref_enable_quantity_checks"
         android:summary="@string/pref_enable_quantity_checks_summary"
         android:title="@string/pref_enable_quantity_checks" />
 
     <EditTextPreference
         android:id="@+id/pref_interval_between_quantity_checks"
+        android:defaultValue="30"
         android:dependency="pref_enable_quantity_checks"
         android:inputType="number"
         android:key="pref_interval_between_quantity_checks"
