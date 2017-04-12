@@ -56,16 +56,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             boolean enableQuantityChecks = (boolean) newValue;
 
             if (enableQuantityChecks) {
-                scheduleGroceryListJob(getActivity());
+                int minutesBetweenQuantityChecks = _jobConfiguration.getMinutesBetweenQuantityChecks();
+                scheduleGroceryListJob(getActivity(), minutesBetweenQuantityChecks);
             } else {
                 _jobScheduler.cancelAll();
             }
         } else if (PreferenceName.MINUTES_BETWEEN_QUANTITY_CHECKS.equals(preference.getKey())) {
-            isNewValueCorrect = Integer.parseInt((String) newValue) >= 1;
+            int minutesBetweenQuantityChecks = Integer.parseInt((String) newValue);
+            isNewValueCorrect = minutesBetweenQuantityChecks >= 1;
 
             if (isNewValueCorrect) {
                 _jobScheduler.cancelAll();
-                scheduleGroceryListJob(getActivity());
+                scheduleGroceryListJob(getActivity(), minutesBetweenQuantityChecks);
             }
         }
 
@@ -83,10 +85,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         return isValidUrl;
     }
 
-    private void scheduleGroceryListJob(Activity activity) {
+    private void scheduleGroceryListJob(Activity activity, int minutesBetweenQuantityChecks) {
         ComponentName componentName = new ComponentName(activity.getPackageName(), GroceryListJob.class.getName());
 
-        int minutesBetweenQuantityChecks = _jobConfiguration.getMinutesBetweenQuantityChecks();
         int intervalMillis = minutesBetweenQuantityChecks * 60 * 1000;
 
         JobInfo.Builder builder = new JobInfo.Builder(1, componentName)
