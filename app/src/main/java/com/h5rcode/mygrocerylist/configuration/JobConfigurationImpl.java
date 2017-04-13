@@ -36,4 +36,19 @@ public class JobConfigurationImpl implements JobConfiguration {
 
         return minutesBetweenQuantityChecks;
     }
+
+    @Override
+    public boolean isItemsQuantityRatioAboveMax() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
+        return preferences.getBoolean(PreferenceName.IS_ITEMS_QUANTITY_RATIO_ABOVE_MAX, false);
+    }
+
+    @Override
+    public void setIsItemsQuantityRatioAboveMax(boolean isItemsQuantityRatioAboveMax) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putBoolean(PreferenceName.IS_ITEMS_QUANTITY_RATIO_ABOVE_MAX, isItemsQuantityRatioAboveMax);
+        editor.apply();
+    }
 }

@@ -21,6 +21,7 @@ import java.net.URL;
 import javax.inject.Inject;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+    private static final int GroceryListJobId = 1;
 
     @Inject
     JobConfiguration _jobConfiguration;
@@ -59,14 +60,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 int minutesBetweenQuantityChecks = _jobConfiguration.getMinutesBetweenQuantityChecks();
                 scheduleGroceryListJob(getActivity(), minutesBetweenQuantityChecks);
             } else {
-                _jobScheduler.cancelAll();
+                _jobScheduler.cancel(GroceryListJobId);
             }
         } else if (PreferenceName.MINUTES_BETWEEN_QUANTITY_CHECKS.equals(preference.getKey())) {
             int minutesBetweenQuantityChecks = Integer.parseInt((String) newValue);
             isNewValueCorrect = minutesBetweenQuantityChecks >= 1;
 
             if (isNewValueCorrect) {
-                _jobScheduler.cancelAll();
                 scheduleGroceryListJob(getActivity(), minutesBetweenQuantityChecks);
             }
         }
@@ -90,11 +90,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         int intervalMillis = minutesBetweenQuantityChecks * 60 * 1000;
 
-        JobInfo.Builder builder = new JobInfo.Builder(1, componentName)
+        JobInfo.Builder builder = new JobInfo.Builder(GroceryListJobId, componentName)
                 .setPeriodic(intervalMillis)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);
 
         JobInfo jobInfo = builder.build();
+
+        _jobScheduler.cancel(GroceryListJobId);
+
         if (_jobScheduler.schedule(jobInfo) == JobScheduler.RESULT_FAILURE) {
             throw new RuntimeException("Could not schedule job.");
         }

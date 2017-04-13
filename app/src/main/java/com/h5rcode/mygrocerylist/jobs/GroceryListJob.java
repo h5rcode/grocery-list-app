@@ -12,13 +12,14 @@ import com.h5rcode.mygrocerylist.MyGroceryListApp;
 import com.h5rcode.mygrocerylist.R;
 import com.h5rcode.mygrocerylist.activities.GroceryListActivity;
 import com.h5rcode.mygrocerylist.apiclient.models.ItemsQuantityRatioInfo;
+import com.h5rcode.mygrocerylist.configuration.JobConfiguration;
 import com.h5rcode.mygrocerylist.services.GroceryListService;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
@@ -30,6 +31,9 @@ public class GroceryListJob extends JobService {
 
     @Inject
     GroceryListService groceryListService;
+
+    @Inject
+    JobConfiguration jobConfiguration;
 
     private final CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -44,12 +48,10 @@ public class GroceryListJob extends JobService {
     public boolean onStartJob(final JobParameters params) {
         Log.i(TAG, "Starting job.");
 
-        Observable<ItemsQuantityRatioInfo> observable = Observable.create(new ObservableOnSubscribe<ItemsQuantityRatioInfo>() {
+        Observable<ItemsQuantityRatioInfo> observable = Observable.fromCallable(new Callable<ItemsQuantityRatioInfo>() {
             @Override
-            public void subscribe(ObservableEmitter<ItemsQuantityRatioInfo> e) throws Exception {
-                ItemsQuantityRatioInfo itemsQuantityRatioInfo = groceryListService.getItemsQuantityRatioInfo();
-                e.onNext(itemsQuantityRatioInfo);
-                e.onComplete();
+            public ItemsQuantityRatioInfo call() throws Exception {
+                return groceryListService.getItemsQuantityRatioInfo();
             }
         });
 
@@ -86,7 +88,8 @@ public class GroceryListJob extends JobService {
         double maxItemsInLowQuantityRatio = itemsQuantityRatioInfo.maxItemsInLowQuantityRatio;
 
         boolean isRatioAboveMax = ratio > maxItemsInLowQuantityRatio;
-        if (isRatioAboveMax) {
+        boolean previousItemsQuantityRatioWasAboveMax = jobConfiguration.isItemsQuantityRatioAboveMax();
+        if (isRatioAboveMax && !previousItemsQuantityRatioWasAboveMax) {
             Intent resultIntent = new Intent(this, GroceryListActivity.class);
             PendingIntent resultPendingIntent =
                     PendingIntent.getActivity(
@@ -107,6 +110,8 @@ public class GroceryListJob extends JobService {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(1, builder.build());
         }
+
+        jobConfiguration.setIsItemsQuantityRatioAboveMax(isRatioAboveMax);
     }
 
     @Override
