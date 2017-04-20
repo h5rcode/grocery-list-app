@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 
 import com.h5rcode.mygrocerylist.MyGroceryListApp;
 import com.h5rcode.mygrocerylist.R;
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
     private static final int GroceryListJobId = 1;
+    private static final String TAG = SettingsFragment.class.getName();
 
     @Inject
     JobConfiguration _jobConfiguration;
@@ -60,6 +62,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 int minutesBetweenQuantityChecks = _jobConfiguration.getMinutesBetweenQuantityChecks();
                 scheduleGroceryListJob(getActivity(), minutesBetweenQuantityChecks);
             } else {
+                Log.i(TAG, "Cancelling job.");
                 _jobScheduler.cancel(GroceryListJobId);
             }
         } else if (PreferenceName.MINUTES_BETWEEN_QUANTITY_CHECKS.equals(preference.getKey())) {
@@ -86,6 +89,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     }
 
     private void scheduleGroceryListJob(Activity activity, int minutesBetweenQuantityChecks) {
+        Log.i(TAG, "Scheduling the job to run every " + minutesBetweenQuantityChecks + " minutes.");
+
         ComponentName componentName = new ComponentName(activity.getPackageName(), GroceryListJob.class.getName());
 
         int intervalMillis = minutesBetweenQuantityChecks * 60 * 1000;

@@ -70,8 +70,6 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
         buttonAddGroceryItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Add button clicked.");
-
                 AddGroceryItemDialogFragment dialog = new AddGroceryItemDialogFragment();
                 dialog.setTargetFragment(GroceryListFragment.this, 0);
                 dialog.show(getFragmentManager(), TAG_ADD_ITEM_FRAGMENT);
