@@ -137,12 +137,6 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        _groceryListPresenter.onDestroy();
-    }
-
-    @Override
     public void onItemEdited(GroceryItem item) {
         _groceryListAdapter.updateGroceryItem(item);
     }

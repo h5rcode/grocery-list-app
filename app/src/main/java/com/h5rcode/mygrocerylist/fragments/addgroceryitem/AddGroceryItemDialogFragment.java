@@ -143,12 +143,6 @@ public class AddGroceryItemDialogFragment extends DialogFragment implements AddG
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        addGroceryItemPresenter.onDestroy();
-    }
-
-    @Override
     public void onGroceryItemCategoriesLoaded(List<GroceryItemCategory> groceryItemCategories) {
         CategoryListAdapter categoryListAdapter = new CategoryListAdapter(getContext(), groceryItemCategories);
         _spinnerCategory.setAdapter(categoryListAdapter);

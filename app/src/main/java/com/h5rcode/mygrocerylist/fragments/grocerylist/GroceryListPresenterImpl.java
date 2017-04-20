@@ -8,14 +8,13 @@ import java.util.concurrent.Callable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class GroceryListPresenterImpl implements GroceryListPresenter {
     private final GroceryListService _groceryListService;
-    private final CompositeDisposable _disposables = new CompositeDisposable();
 
     private GroceryListView _groceryListView;
 
@@ -25,14 +24,19 @@ public class GroceryListPresenterImpl implements GroceryListPresenter {
 
     @Override
     public void loadGroceryList() {
-        Observable<GroceryList> elementsObservable = Observable.fromCallable(new Callable<GroceryList>() {
+        Observable<GroceryList> groceryListObservable = Observable.fromCallable(new Callable<GroceryList>() {
             @Override
             public GroceryList call() throws Exception {
                 return _groceryListService.getGroceryList();
             }
         });
 
-        DisposableObserver<GroceryList> elementsObserver = new DisposableObserver<GroceryList>() {
+        Observer<GroceryList> groceryListObserver = new Observer<GroceryList>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                // Do nothing.
+            }
+
             @Override
             public void onNext(GroceryList groceryList) {
                 _groceryListView.onGroceryListLoaded(groceryList);
@@ -49,12 +53,10 @@ public class GroceryListPresenterImpl implements GroceryListPresenter {
             }
         };
 
-        _disposables.add(elementsObserver);
-
-        elementsObservable
+        groceryListObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(elementsObserver);
+                .subscribe(groceryListObserver);
     }
 
     @Override
@@ -67,36 +69,30 @@ public class GroceryListPresenterImpl implements GroceryListPresenter {
             }
         });
 
-        DisposableObserver<Void> deletionObserver = new DisposableObserver<Void>() {
-            @Override
-            public void onNext(Void value) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                _groceryListView.onDeleteItemError(e);
-            }
-
-            @Override
-            public void onComplete() {
-                _groceryListView.onItemDeleted(id);
-                _disposables.remove(this);
-                dispose();
-            }
-        };
-
-        _disposables.add(deletionObserver);
-
         observableDeletion
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(deletionObserver);
-    }
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        // Do nothing.
+                    }
 
-    @Override
-    public void onDestroy() {
-        _disposables.dispose();
+                    @Override
+                    public void onNext(Void value) {
+                        // Do nothing.
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        _groceryListView.onDeleteItemError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        _groceryListView.onItemDeleted(id);
+                    }
+                });
     }
 
     @Override

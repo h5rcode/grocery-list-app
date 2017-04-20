@@ -237,12 +237,6 @@ public class EditGroceryItemDialogFragment extends DialogFragment implements Edi
         Toast.makeText(getContext(), getString(R.string.error_updating_item, e.getMessage()), Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        editGroceryItemPresenter.onDestroy();
-    }
-
     public interface EditItemDialogListener {
         void onItemEdited(GroceryItem item);
 

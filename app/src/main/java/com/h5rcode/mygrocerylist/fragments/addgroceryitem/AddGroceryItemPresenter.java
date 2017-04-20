@@ -6,8 +6,6 @@ public interface AddGroceryItemPresenter {
 
     void onCreateDialog();
 
-    void onDestroy();
-
     void setAddGroceryItemView(AddGroceryItemView addGroceryItemView);
 
     void saveGroceryItem(GroceryItem groceryItem);

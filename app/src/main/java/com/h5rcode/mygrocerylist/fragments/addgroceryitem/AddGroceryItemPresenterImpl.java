@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class AddGroceryItemPresenterImpl implements AddGroceryItemPresenter {
 
     private final GroceryListService _groceryListService;
-    private final CompositeDisposable _disposables = new CompositeDisposable();
     private AddGroceryItemView _addGroceryItemView;
 
     public AddGroceryItemPresenterImpl(GroceryListService groceryListService) {
@@ -37,7 +37,12 @@ public class AddGroceryItemPresenterImpl implements AddGroceryItemPresenter {
             }
         });
 
-        DisposableObserver<GroceryItem> saveObserver = new DisposableObserver<GroceryItem>() {
+        Observer<GroceryItem> saveObserver = new Observer<GroceryItem>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                // Do nothing.
+            }
+
             @Override
             public void onNext(GroceryItem value) {
                 _addGroceryItemView.onGroceryItemSaved(value);
@@ -58,8 +63,6 @@ public class AddGroceryItemPresenterImpl implements AddGroceryItemPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(saveObserver);
-
-        _disposables.add(saveObserver);
     }
 
     @Override
@@ -92,12 +95,5 @@ public class AddGroceryItemPresenterImpl implements AddGroceryItemPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(categoriesObserver);
-
-        _disposables.add(categoriesObserver);
-    }
-
-    @Override
-    public void onDestroy() {
-        _disposables.dispose();
     }
 }

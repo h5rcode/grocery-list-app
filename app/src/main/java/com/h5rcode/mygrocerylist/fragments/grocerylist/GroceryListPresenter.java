@@ -5,7 +5,5 @@ public interface GroceryListPresenter {
 
     void onDeleteItem(long id);
 
-    void onDestroy();
-
     void setGroceryListView(GroceryListView groceryListView);
 }

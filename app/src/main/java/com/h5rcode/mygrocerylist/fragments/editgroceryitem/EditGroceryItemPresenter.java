@@ -9,6 +9,4 @@ public interface EditGroceryItemPresenter {
     void onCreateDialog();
 
     void onUpdateGroceryItem(GroceryItem groceryItem);
-
-    void onDestroy();
 }

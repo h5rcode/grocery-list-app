@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class EditGroceryItemPresenterImpl implements EditGroceryItemPresenter {
 
-    private final CompositeDisposable _disposables = new CompositeDisposable();
     private final GroceryListService _groceryListService;
     private EditGroceryItemView _editGroceryItemView;
 
@@ -60,8 +60,6 @@ public class EditGroceryItemPresenterImpl implements EditGroceryItemPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(categoriesObserver);
-
-        _disposables.add(categoriesObserver);
     }
 
     @Override
@@ -73,7 +71,12 @@ public class EditGroceryItemPresenterImpl implements EditGroceryItemPresenter {
             }
         });
 
-        DisposableObserver<GroceryItemUpdateResult> updateObserver = new DisposableObserver<GroceryItemUpdateResult>() {
+        Observer<GroceryItemUpdateResult> updateObserver = new Observer<GroceryItemUpdateResult>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                // Do nothing.
+            }
+
             @Override
             public void onNext(GroceryItemUpdateResult updateResult) {
                 GroceryItem groceryItem = updateResult.getGroceryItem();
@@ -103,12 +106,5 @@ public class EditGroceryItemPresenterImpl implements EditGroceryItemPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(updateObserver);
-
-        _disposables.add(updateObserver);
-    }
-
-    @Override
-    public void onDestroy() {
-        _disposables.dispose();
     }
 }
