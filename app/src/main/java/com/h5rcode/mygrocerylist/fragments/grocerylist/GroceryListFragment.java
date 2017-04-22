@@ -1,5 +1,6 @@
 package com.h5rcode.mygrocerylist.fragments.grocerylist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -18,21 +19,25 @@ import android.widget.ListView;
 
 import com.h5rcode.mygrocerylist.MyGroceryListApp;
 import com.h5rcode.mygrocerylist.R;
+import com.h5rcode.mygrocerylist.activities.AddGroceryItemActivity;
+import com.h5rcode.mygrocerylist.activities.EditGroceryItemActivity;
 import com.h5rcode.mygrocerylist.adapters.GroceryListAdapter;
 import com.h5rcode.mygrocerylist.adapters.viewmodels.GroceryElementViewModel;
 import com.h5rcode.mygrocerylist.adapters.viewmodels.GroceryItemViewModel;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
-import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemDialogFragment;
-import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemDialogFragment;
+import com.h5rcode.mygrocerylist.fragments.addgroceryitem.AddGroceryItemFragment;
+import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemFragment;
 import com.h5rcode.mygrocerylist.services.models.GroceryList;
 
 import javax.inject.Inject;
 
-public class GroceryListFragment extends Fragment implements AddGroceryItemDialogFragment.AddItemDialogListener, EditGroceryItemDialogFragment.EditItemDialogListener, GroceryListView {
+import static android.app.Activity.RESULT_OK;
+
+public class GroceryListFragment extends Fragment implements GroceryListView {
     private static final int ITEM_DELETE = 1;
     private static final String TAG = GroceryListFragment.class.getName();
-    private static final String TAG_EDIT_ITEM_FRAGMENT = "TAG_EDIT_ITEM_FRAGMENT";
-    private static final String TAG_ADD_ITEM_FRAGMENT = "TAG_ADD_ITEM_FRAGMENT";
+    private static final int REQUEST_ADD_ITEM = 1;
+    private static final int REQUEST_EDIT_ITEM = 2;
 
     @Inject
     GroceryListPresenter _groceryListPresenter;
@@ -70,9 +75,8 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
         buttonAddGroceryItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddGroceryItemDialogFragment dialog = new AddGroceryItemDialogFragment();
-                dialog.setTargetFragment(GroceryListFragment.this, 0);
-                dialog.show(getFragmentManager(), TAG_ADD_ITEM_FRAGMENT);
+                Intent intent = new Intent(getContext(), AddGroceryItemActivity.class);
+                startActivityForResult(intent, REQUEST_ADD_ITEM);
             }
         });
 
@@ -83,12 +87,15 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Object listItem = parent.getItemAtPosition(position);
 
+
                 if (listItem instanceof GroceryItemViewModel) {
                     GroceryItemViewModel viewModel = (GroceryItemViewModel) listItem;
                     GroceryItem groceryItem = viewModel.getGroceryItem();
-                    EditGroceryItemDialogFragment dialog = EditGroceryItemDialogFragment.newInstance(groceryItem);
-                    dialog.setTargetFragment(GroceryListFragment.this, 0);
-                    dialog.show(getFragmentManager(), TAG_EDIT_ITEM_FRAGMENT);
+
+                    Intent intent = new Intent(getContext(), EditGroceryItemActivity.class);
+                    intent.putExtra(EditGroceryItemFragment.EXTRA_ITEM_TO_EDIT, groceryItem);
+
+                    startActivityForResult(intent, REQUEST_EDIT_ITEM);
                 }
             }
         });
@@ -135,13 +142,26 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
     }
 
     @Override
-    public void onItemEdited(GroceryItem item) {
-        _groceryListAdapter.updateGroceryItem(item);
-    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ADD_ITEM) {
+            if (resultCode == RESULT_OK) {
+                GroceryItem groceryItem = (GroceryItem) data.getSerializableExtra(AddGroceryItemFragment.EXTRA_NEW_ITEM);
+                _groceryListAdapter.addGroceryItem(groceryItem);
+            }
+        } else if (requestCode == REQUEST_EDIT_ITEM) {
+            if (resultCode == RESULT_OK) {
+                EditGroceryItemFragment.ItemEditionResult result = (EditGroceryItemFragment.ItemEditionResult) data.getSerializableExtra(EditGroceryItemFragment.EXTRA_ITEM_EDITION_RESULT);
+                GroceryItem groceryItem = (GroceryItem) data.getSerializableExtra(EditGroceryItemFragment.EXTRA_ITEM_EDITED);
 
-    @Override
-    public void onItemRemoved(GroceryItem item) {
-        _groceryListAdapter.removeGroceryItem(item.id);
+                if (result == EditGroceryItemFragment.ItemEditionResult.ITEM_REMOVED_BY_ANOTHER_USER) {
+                    _groceryListAdapter.removeGroceryItem(groceryItem.id);
+                } else if (result == EditGroceryItemFragment.ItemEditionResult.SUCCESS) {
+                    data.getSerializableExtra(EditGroceryItemFragment.EXTRA_ITEM_EDITION_RESULT);
+
+                    _groceryListAdapter.updateGroceryItem(groceryItem);
+                }
+            }
+        }
     }
 
     @Override
@@ -174,10 +194,5 @@ public class GroceryListFragment extends Fragment implements AddGroceryItemDialo
         if (view != null) {
             Snackbar.make(view, getString(R.string.error_deleting_item, e.getMessage()), Snackbar.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void onSave(GroceryItem groceryItem) {
-        _groceryListAdapter.addGroceryItem(groceryItem);
     }
 }

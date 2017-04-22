@@ -1,14 +1,20 @@
 package com.h5rcode.mygrocerylist.fragments.editgroceryitem;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -21,14 +27,17 @@ import com.h5rcode.mygrocerylist.adapters.CategoryListAdapter;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItem;
 import com.h5rcode.mygrocerylist.apiclient.models.GroceryItemCategory;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class EditGroceryItemDialogFragment extends DialogFragment implements EditGroceryItemView {
+public class EditGroceryItemFragment extends Fragment implements EditGroceryItemView {
+    public static final String EXTRA_ITEM_EDITION_RESULT = "EXTRA_ITEM_EDITION_RESULT";
+    public static final String EXTRA_ITEM_EDITED = "EXTRA_ITEM_EDITED";
+    public static final String EXTRA_ITEM_TO_EDIT = "EXTRA_ITEM_TO_EDIT";
 
-    private static String ARG_ITEM = "ARG_ITEM";
-    private static String TAG = EditItemDialogListener.class.getName();
+    private static final String TAG = EditGroceryItemFragment.class.getName();
 
     private Spinner _spinnerCategory;
     private TextView _textMinimumQuantity;
@@ -39,36 +48,52 @@ public class EditGroceryItemDialogFragment extends DialogFragment implements Edi
     EditGroceryItemPresenter editGroceryItemPresenter;
 
     private GroceryItem _groceryItem;
-    private EditItemDialogListener _editItemDialogListener;
-
-    public static EditGroceryItemDialogFragment newInstance(GroceryItem item) {
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_ITEM, item);
-
-        EditGroceryItemDialogFragment fragment = new EditGroceryItemDialogFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private MenuItem _menuItemSave;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
-        ((MyGroceryListApp) getActivity().getApplication()).getServiceComponent().inject(this);
+        FragmentActivity activity = getActivity();
+        ((MyGroceryListApp) activity.getApplication()).getServiceComponent().inject(this);
 
         editGroceryItemPresenter.setEditGroceryItemView(this);
 
-        Bundle args = getArguments();
-        _groceryItem = (GroceryItem) args.getSerializable(ARG_ITEM);
-        _editItemDialogListener = (EditItemDialogListener) getTargetFragment();
+        Intent intent = activity.getIntent();
+
+        _groceryItem = (GroceryItem) intent.getSerializableExtra(EXTRA_ITEM_TO_EDIT);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.edit_grocery_item, menu);
+
+        _menuItemSave = menu.findItem(R.id.edit_grocery_item_menu_save);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit_grocery_item_menu_save:
+                _menuItemSave.setEnabled(false);
+                editGroceryItemPresenter.onUpdateGroceryItem(_groceryItem);
+                return true;
+
+            case android.R.id.home:
+                Activity activity = getActivity();
+                activity.finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Activity activity = getActivity();
-        LayoutInflater inflater = activity.getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_edit_item, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_edit_grocery_item, null);
 
         _spinnerCategory = (Spinner) view.findViewById(R.id.spinner_edit_category);
         _textMinimumQuantity = (TextView) view.findViewById(R.id.text_minimum_quantity);
@@ -81,7 +106,6 @@ public class EditGroceryItemDialogFragment extends DialogFragment implements Edi
         Button buttonIncrementMinimumQuantity = (Button) view.findViewById(R.id.button_increment_minimum_quantity);
         Button buttonDecrementDesiredQuantity = (Button) view.findViewById(R.id.button_decrement_desired_quantity);
         Button buttonIncrementDesiredQuantity = (Button) view.findViewById(R.id.button_increment_desired_quantity);
-        Button okButton = (Button) view.findViewById(R.id.button_ok);
 
         editGroceryItemPresenter.onCreateDialog();
 
@@ -141,20 +165,14 @@ public class EditGroceryItemDialogFragment extends DialogFragment implements Edi
             }
         });
 
-        okButton.setOnClickListener(new View.OnClickListener() {
+        return view;
+    }
 
-            @Override
-            public void onClick(View v) {
-                editGroceryItemPresenter.onUpdateGroceryItem(_groceryItem);
-            }
-        });
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setCancelable(false);
-        builder.setTitle(_groceryItem.label);
-        builder.setView(view);
-
-        return builder.create();
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        FragmentActivity activity = getActivity();
+        activity.setTitle(_groceryItem.label);
     }
 
     private void updateDesiredQuantity(int increment) {
@@ -197,9 +215,13 @@ public class EditGroceryItemDialogFragment extends DialogFragment implements Edi
 
     @Override
     public void groceryItemUpdateSucceeded(GroceryItem groceryItem) {
-        _groceryItem.version = groceryItem.version;
-        _editItemDialogListener.onItemEdited(_groceryItem);
-        dismiss();
+        Intent data = new Intent();
+        data.putExtra(EXTRA_ITEM_EDITION_RESULT, ItemEditionResult.SUCCESS);
+        data.putExtra(EXTRA_ITEM_EDITED, groceryItem);
+
+        Activity activity = getActivity();
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
     }
 
     @Override
@@ -209,37 +231,50 @@ public class EditGroceryItemDialogFragment extends DialogFragment implements Edi
         _groceryItem.desiredQuantity = groceryItem.desiredQuantity;
         _groceryItem.version = groceryItem.version;
 
-        _editItemDialogListener.onItemEdited(_groceryItem);
-
         _textCurrentQuantity.setText(String.valueOf(_groceryItem.currentQuantity));
         _textMinimumQuantity.setText(String.valueOf(_groceryItem.minimumQuantity));
         _textDesiredQuantity.setText(String.valueOf(_groceryItem.desiredQuantity));
 
         Toast.makeText(getContext(), R.string.message_item_edited_by_other_user, Toast.LENGTH_LONG).show();
+
+        _menuItemSave.setEnabled(true);
     }
 
     @Override
     public void groceryItemRemovedByAnOtherUser(GroceryItem groceryItem) {
         Toast.makeText(getContext(), R.string.message_item_removed_by_other_user, Toast.LENGTH_LONG).show();
-        _editItemDialogListener.onItemRemoved(_groceryItem);
-        dismiss();
+
+        Intent data = new Intent();
+        data.putExtra(EXTRA_ITEM_EDITION_RESULT, ItemEditionResult.ITEM_REMOVED_BY_ANOTHER_USER);
+        data.putExtra(EXTRA_ITEM_EDITED, _groceryItem);
+
+        Activity activity = getActivity();
+        activity.setResult(Activity.RESULT_OK, data);
+        activity.finish();
     }
 
     @Override
     public void onLoadGroceryItemCategoriesError(Throwable e) {
         Log.e(TAG, "An error occurred when loading the grocery item categories.", e);
-        Toast.makeText(getContext(), getString(R.string.error_loading_grocery_list_categories, e.getMessage()), Toast.LENGTH_LONG).show();
+
+        View view = getView();
+        if (view != null) {
+            Snackbar.make(view, getString(R.string.error_loading_grocery_list_categories, e.getMessage()), Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void onUpdateGroceryItemError(Throwable e) {
         Log.e(TAG, "An error occurred when updating an item.", e);
-        Toast.makeText(getContext(), getString(R.string.error_updating_item, e.getMessage()), Toast.LENGTH_LONG).show();
+
+        View view = getView();
+        if (view != null) {
+            Snackbar.make(view, getString(R.string.error_updating_item, e.getMessage()), Snackbar.LENGTH_LONG).show();
+        }
     }
 
-    public interface EditItemDialogListener {
-        void onItemEdited(GroceryItem item);
-
-        void onItemRemoved(GroceryItem item);
+    public enum ItemEditionResult implements Serializable {
+        SUCCESS,
+        ITEM_REMOVED_BY_ANOTHER_USER
     }
 }

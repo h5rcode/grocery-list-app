@@ -6,8 +6,8 @@
     android:orientation="horizontal">
 
     <fragment
-        android:id="@+id/fragment_grocery_list"
-        android:name="com.h5rcode.mygrocerylist.fragments.grocerylist.GroceryListFragment"
+        android:id="@+id/fragment_edit_grocery_item"
+        android:name="com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />

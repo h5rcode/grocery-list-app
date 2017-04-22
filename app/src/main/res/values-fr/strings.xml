@@ -19,7 +19,7 @@
     <string name="error_loading_grocery_list_categories">Une erreur est survenue au chargement des catégories : %s.</string>
     <string name="error_updating_item">Une erreur est survenue lors de la mise à jour de l\'item: %s.</string>
     <string name="label_label">Libellé</string>
-    <string name="title_dialog_add_item">Ajouter un item</string>
+    <string name="activity_add_grocery_item">Ajouter un item</string>
     <string name="info_mandatory_field">Ce champ est obligatoire.</string>
     <string name="info_desired_quantity_must_be_greater_than_minimum_quantity">La quantité souhaitée doit être supérieure ou égale à la quantité minimum.</string>
     <string name="button_cancel_add_item">Annuler</string>
@@ -30,4 +30,6 @@
     <string name="pref_enable_quantity_checks_summary">Cette option active une tâche de fond qui vérifiera périodiquement si les quantités d\'articles ne sont pas trop faibles.</string>
     <string name="pref_enable_quantity_checks">Activer la vérification des quantités</string>
     <string name="notification_message">Il est temps d\'aller faire des courses !</string>
+    <string name="add_grocery_item_menu_save">Enregistrer</string>
+    <string name="edit_grocery_item_menu_save">Enregistrer</string>
 </resources>
