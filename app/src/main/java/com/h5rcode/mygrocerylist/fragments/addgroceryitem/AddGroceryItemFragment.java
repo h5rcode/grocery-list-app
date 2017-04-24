@@ -30,8 +30,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AddGroceryItemFragment extends Fragment implements AddGroceryItemView {
-    public static String EXTRA_NEW_ITEM = "EXTRA_NEW_ITEM";
-    private static String TAG = AddGroceryItemFragment.class.getName();
+    public final static String EXTRA_NEW_ITEM = "EXTRA_NEW_ITEM";
+    private final static String TAG = AddGroceryItemFragment.class.getName();
 
     private Spinner _spinnerCategory;
 
@@ -80,7 +80,7 @@ public class AddGroceryItemFragment extends Fragment implements AddGroceryItemVi
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_grocery_item, null);
+        View view = inflater.inflate(R.layout.fragment_add_grocery_item, container);
 
         _textLabel = (EditText) view.findViewById(R.id.edit_text_label);
         _spinnerCategory = (Spinner) view.findViewById(R.id.spinner_category);

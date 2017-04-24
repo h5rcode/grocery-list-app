@@ -1,6 +1,7 @@
 package com.h5rcode.mygrocerylist.dependencies.modules;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -17,6 +18,9 @@ import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemPresen
 import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemPresenterImpl;
 import com.h5rcode.mygrocerylist.fragments.grocerylist.GroceryListPresenter;
 import com.h5rcode.mygrocerylist.fragments.grocerylist.GroceryListPresenterImpl;
+import com.h5rcode.mygrocerylist.jobs.GroceryListJobScheduler;
+import com.h5rcode.mygrocerylist.jobs.android.GroceryListJobSchedulerAndroidImpl;
+import com.h5rcode.mygrocerylist.jobs.firebase.GroceryListJobSchedulerFirebaseImpl;
 import com.h5rcode.mygrocerylist.services.GroceryListService;
 import com.h5rcode.mygrocerylist.services.GroceryListServiceImpl;
 
@@ -58,6 +62,14 @@ public class ServiceModule {
     @Provides
     GroceryListClient provideCategoryService(ClientConfiguration clientConfiguration, RequestQueue requestQueue) {
         return new GroceryListClientVolley(clientConfiguration, requestQueue);
+    }
+    @Provides
+    GroceryListJobScheduler provideGroceryListJobService(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return new GroceryListJobSchedulerAndroidImpl(context);
+        } else {
+            return new GroceryListJobSchedulerFirebaseImpl(context);
+        }
     }
 
     @Provides

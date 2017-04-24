@@ -32,7 +32,7 @@ public class GroceryListAdapter extends BaseAdapter {
     private final List<GroceryItem> _groceryItems = new ArrayList<>();
 
     private final List<GroceryElementViewModel> _viewModels = new ArrayList<>();
-    private LayoutInflater _layoutInflater;
+    private final LayoutInflater _layoutInflater;
 
     private final int _redColor;
     private final int _lightGreenColor;
@@ -52,18 +52,18 @@ public class GroceryListAdapter extends BaseAdapter {
 
         _groceryItemCategories.addAll(groceryList.getGroceryItemCategories());
         _groceryItems.addAll(groceryList.getGroceryItems());
-        computeViewModelsAndNotifyDatasetChanged();
+        computeViewModelsAndNotifyDataSetChanged();
     }
 
     public void addGroceryItem(GroceryItem groceryItem) {
         _groceryItems.add(groceryItem);
-        computeViewModelsAndNotifyDatasetChanged();
+        computeViewModelsAndNotifyDataSetChanged();
     }
 
     public void removeGroceryItem(long id) {
         GroceryItem groceryItem = getGroceryItem(id);
         _groceryItems.remove(groceryItem);
-        computeViewModelsAndNotifyDatasetChanged();
+        computeViewModelsAndNotifyDataSetChanged();
     }
 
     public void updateGroceryItem(GroceryItem newGroceryItem) {
@@ -75,7 +75,7 @@ public class GroceryListAdapter extends BaseAdapter {
         _groceryItems.remove(index);
         _groceryItems.add(index, newGroceryItem);
 
-        computeViewModelsAndNotifyDatasetChanged();
+        computeViewModelsAndNotifyDataSetChanged();
     }
 
     @Override
@@ -146,7 +146,7 @@ public class GroceryListAdapter extends BaseAdapter {
         }
     }
 
-    private void computeViewModelsAndNotifyDatasetChanged() {
+    private void computeViewModelsAndNotifyDataSetChanged() {
         computeViewModels();
         notifyDataSetChanged();
     }

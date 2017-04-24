@@ -1,10 +1,6 @@
 package com.h5rcode.mygrocerylist.fragments.settings;
 
 import android.app.Activity;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -14,7 +10,8 @@ import com.h5rcode.mygrocerylist.MyGroceryListApp;
 import com.h5rcode.mygrocerylist.R;
 import com.h5rcode.mygrocerylist.configuration.JobConfiguration;
 import com.h5rcode.mygrocerylist.constants.PreferenceName;
-import com.h5rcode.mygrocerylist.jobs.GroceryListJob;
+import com.h5rcode.mygrocerylist.jobs.GroceryListJobInfo;
+import com.h5rcode.mygrocerylist.jobs.GroceryListJobScheduler;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,9 +23,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     private static final String TAG = SettingsFragment.class.getName();
 
     @Inject
-    JobConfiguration _jobConfiguration;
+    GroceryListJobScheduler _groceryListJobScheduler;
 
-    private JobScheduler _jobScheduler;
+    @Inject
+    JobConfiguration _jobConfiguration;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,8 +35,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         Activity activity = getActivity();
 
         ((MyGroceryListApp) activity.getApplication()).getServiceComponent().inject(this);
-
-        _jobScheduler = (JobScheduler) activity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         addPreferencesFromResource(R.xml.settings);
 
@@ -60,17 +56,16 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
             if (enableQuantityChecks) {
                 int minutesBetweenQuantityChecks = _jobConfiguration.getMinutesBetweenQuantityChecks();
-                scheduleGroceryListJob(getActivity(), minutesBetweenQuantityChecks);
+                scheduleGroceryListJob(minutesBetweenQuantityChecks);
             } else {
-                Log.i(TAG, "Cancelling job.");
-                _jobScheduler.cancel(GroceryListJobId);
+                cancelGroceryListJob();
             }
         } else if (PreferenceName.MINUTES_BETWEEN_QUANTITY_CHECKS.equals(preference.getKey())) {
             int minutesBetweenQuantityChecks = Integer.parseInt((String) newValue);
             isNewValueCorrect = minutesBetweenQuantityChecks >= 1;
 
             if (isNewValueCorrect) {
-                scheduleGroceryListJob(getActivity(), minutesBetweenQuantityChecks);
+                scheduleGroceryListJob(minutesBetweenQuantityChecks);
             }
         }
 
@@ -88,23 +83,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         return isValidUrl;
     }
 
-    private void scheduleGroceryListJob(Activity activity, int minutesBetweenQuantityChecks) {
+    private void cancelGroceryListJob() {
+        Log.i(TAG, "Cancelling job.");
+        GroceryListJobInfo jobInfo = new GroceryListJobInfo(0, GroceryListJobId);
+        _groceryListJobScheduler.cancelJob(jobInfo);
+    }
+
+    private void scheduleGroceryListJob(int minutesBetweenQuantityChecks) {
         Log.i(TAG, "Scheduling the job to run every " + minutesBetweenQuantityChecks + " minutes.");
 
-        ComponentName componentName = new ComponentName(activity.getPackageName(), GroceryListJob.class.getName());
-
         int intervalMillis = minutesBetweenQuantityChecks * 60 * 1000;
-
-        JobInfo.Builder builder = new JobInfo.Builder(GroceryListJobId, componentName)
-                .setPeriodic(intervalMillis)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);
-
-        JobInfo jobInfo = builder.build();
-
-        _jobScheduler.cancel(GroceryListJobId);
-
-        if (_jobScheduler.schedule(jobInfo) == JobScheduler.RESULT_FAILURE) {
-            throw new RuntimeException("Could not schedule job.");
-        }
+        GroceryListJobInfo jobInfo = new GroceryListJobInfo(intervalMillis, GroceryListJobId);
+        _groceryListJobScheduler.scheduleJob(jobInfo);
     }
 }

@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 public class GroceryListClientVolley implements GroceryListClient {
 
     private final RequestQueue _requestQueue;
-    private ClientConfiguration _clientConfiguration;
+    private final ClientConfiguration _clientConfiguration;
 
     public GroceryListClientVolley(ClientConfiguration clientConfiguration, final RequestQueue requestQueue) {
         _clientConfiguration = clientConfiguration;

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GroceryListServiceImpl implements GroceryListService {
 
-    private GroceryListClient _groceryListClient;
+    private final GroceryListClient _groceryListClient;
 
     public GroceryListServiceImpl(GroceryListClient groceryListClient) {
         _groceryListClient = groceryListClient;

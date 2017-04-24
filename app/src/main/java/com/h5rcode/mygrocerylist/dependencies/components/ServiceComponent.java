@@ -6,6 +6,8 @@ import com.h5rcode.mygrocerylist.fragments.editgroceryitem.EditGroceryItemFragme
 import com.h5rcode.mygrocerylist.fragments.grocerylist.GroceryListFragment;
 import com.h5rcode.mygrocerylist.fragments.settings.SettingsFragment;
 import com.h5rcode.mygrocerylist.jobs.GroceryListJob;
+import com.h5rcode.mygrocerylist.jobs.android.GroceryListJobAndroidImpl;
+import com.h5rcode.mygrocerylist.jobs.firebase.GroceryListJobFirebaseImpl;
 
 import javax.inject.Singleton;
 
@@ -23,4 +25,8 @@ public interface ServiceComponent {
     void inject(SettingsFragment settingsFragment);
 
     void inject(GroceryListJob groceryListJob);
+
+    void inject(GroceryListJobAndroidImpl groceryListJobAndroid);
+
+    void inject(GroceryListJobFirebaseImpl groceryListJobFirebase);
 }

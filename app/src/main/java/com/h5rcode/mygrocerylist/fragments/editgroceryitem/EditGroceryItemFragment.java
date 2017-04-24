@@ -93,7 +93,7 @@ public class EditGroceryItemFragment extends Fragment implements EditGroceryItem
     @NonNull
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_edit_grocery_item, null);
+        View view = inflater.inflate(R.layout.fragment_edit_grocery_item, container);
 
         _spinnerCategory = (Spinner) view.findViewById(R.id.spinner_edit_category);
         _textMinimumQuantity = (TextView) view.findViewById(R.id.text_minimum_quantity);
